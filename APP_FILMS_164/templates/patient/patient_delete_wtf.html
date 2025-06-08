@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Effacer un PATIENT (WTF) {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Supprimer ce(tte) patient(e) ?</h3>
+    <form method="POST">
+        {{ form_delete.hidden_tag() }}
+        <div class="form-group">
+            {{ form_delete.nom_patient.label }}
+            {{ form_delete.nom_patient(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.prenom_patient.label }}
+            {{ form_delete.prenom_patient(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.telephone_patient.label }}
+            {{ form_delete.telephone_patient(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.submit_btn_conf_del(class="btn btn-danger") }}
+            {{ form_delete.submit_btn_annuler(class="btn btn-secondary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
+

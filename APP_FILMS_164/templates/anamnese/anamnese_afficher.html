@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Afficher ANAMNESES{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Anamnèses</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('anamnese_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Allergies</th>
+                <th colspan="4"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for anamnese in data %}
+            <tr>
+                <td>{{ anamnese.id_anamnese }}</td>
+                <td>{{ anamnese.nom_patient }}</td>
+                <td>{{ anamnese.prenom_patient }}</td>
+                <td>{{ anamnese.allergies_anamn }}</td>
+                <td><a class="btn btn-warning" href="{{ url_for('anamnese_update_wtf', id_anamnese=anamnese.id_anamnese) }}">Edit</a></td>
+                <td><a class="btn btn-danger" href="{{ url_for('anamnese_delete_wtf', id_anamnese=anamnese.id_anamnese) }}">Delete</a></td>
+                <td><a class="btn btn-info" href="{{ url_for('anamnese_info', id_anamnese=anamnese.id_anamnese) }}">Info</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucune anamnèse.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

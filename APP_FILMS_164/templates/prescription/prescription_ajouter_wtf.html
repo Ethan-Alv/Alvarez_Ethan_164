@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Ajouter une prescription</h3>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+            {% for field, errors in form.errors.items() %}
+                {% for error in errors %}
+                    <li>{{ form[field].label.text }} : {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.patient_select.label }} {{ form.patient_select(class="form-control") }}
+            {% for error in form.patient_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.medecin_select.label }} {{ form.medecin_select(class="form-control") }}
+            {% for error in form.medecin_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.medicament_select.label }} {{ form.medicament_select(class="form-control") }}
+            {% for error in form.medicament_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.posologie_prescr.label }} {{ form.posologie_prescr(class="form-control") }}
+            {% for error in form.posologie_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.duree_traitement_prescr.label }} {{ form.duree_traitement_prescr(class="form-control") }}
+            {% for error in form.duree_traitement_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.debut_prescr.label }} {{ form.debut_prescr(class="form-control") }}
+            {% for error in form.debut_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.fin_prescr.label }} {{ form.fin_prescr(class="form-control") }}
+            {% for error in form.fin_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+</div>
+{% endblock %}

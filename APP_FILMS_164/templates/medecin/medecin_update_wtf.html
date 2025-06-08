@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Modifier un médecin</h3>
+    <form method="POST">
+        {{ form_update.hidden_tag() }}
+        <div class="form-group">
+            {{ form_update.nom_medecin.label }} {{ form_update.nom_medecin(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.prenom_medecin.label }} {{ form_update.prenom_medecin(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.telephone_medecin.label }} {{ form_update.telephone_medecin(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.email_medecin.label }} {{ form_update.email_medecin(class="form-control") }}
+        </div>
+        {{ form_update.submit(class="btn btn-warning") }}
+    </form>
+</div>
+{% endblock %}

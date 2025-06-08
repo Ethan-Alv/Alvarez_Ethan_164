@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Détails de la prescription</h3>
+    {% if data %}
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Patient :</strong> {{ data.nom_patient or '' }} {{ data.prenom_patient or '' }}</li>
+        <li class="list-group-item"><strong>Médecin :</strong> {{ data.nom_medecin or '' }}</li>
+        <li class="list-group-item"><strong>Médicament :</strong> {{ data.nom_medic or '' }} {{ data.dosage_medic or '' }} {{ data.forme_medic or '' }}</li>
+        <li class="list-group-item"><strong>Durée du traitement :</strong> {{ data.duree_traitement_prescr or '' }}</li>
+        <li class="list-group-item"><strong>Début :</strong> {{ data.debut_prescr or '' }}</li>
+        <li class="list-group-item"><strong>Fin :</strong> {{ data.fin_prescr or '' }}</li>
+    </ul>
+    {% else %}
+    <div class="alert alert-warning">Aucune information trouvée pour cette prescription.</div>
+    {% endif %}
+    <a href="{{ url_for('prescriptions_afficher', order_by='ASC', id_prescription_sel=0) }}" class="btn btn-secondary mt-3">Retour</a>
+</div>
+{% endblock %}

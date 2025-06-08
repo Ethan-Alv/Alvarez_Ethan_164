@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %} Infos Examen {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Informations de l'examen</h3>
+    {% if data %}
+    <table class="table table-bordered">
+        <tr><th colspan="2">Patient</th></tr>
+        <tr><td>ID Examen</td><td>{{ data.id_examen }}</td></tr>
+        <tr><td>Type examen</td><td>{{ data.type_examen }}</td></tr>
+        <tr><td>Date examen</td><td>{{ data.date_examen }}</td></tr>
+        <tr><td>Résultat examen</td><td>{{ data.resultats_examen }}</td></tr>
+        <tr><td>Nom patient</td><td>{{ data.nom_patient }}</td></tr>
+        <tr><td>Prénom patient</td><td>{{ data.prenom_patient }}</td></tr>
+    </table>
+    {% else %}
+        <p>Aucune information trouvée.</p>
+    {% endif %}
+    <a href="{{ url_for('examens_afficher', order_by='ASC', id_examen_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

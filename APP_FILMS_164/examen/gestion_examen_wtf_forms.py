@@ -4,59 +4,41 @@
     Gestion des formulaires avec WTF
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField
+from wtforms import StringField, DateField, SelectField, SubmitField
 from wtforms import SubmitField
 from wtforms.validators import Length, InputRequired, DataRequired
 from wtforms.validators import Regexp
+from datetime import datetime
 
 
 class FormWTFAjouterExamen(FlaskForm):
-    """
-        Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
-        Définition d'un "bouton" submit avec un libellé personnalisé.
-    """
-    # nom_examen_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_examen_regexp = ""
-    nom_examen_wtf = StringField("Type d'examen ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                   Regexp(nom_examen_regexp,
-                                                                          message="Pas de chiffres, de caractères "
-                                                                                  "spéciaux, "
-                                                                                  "d'espace à double, de double "
-                                                                                  "apostrophe, de double trait union")
-                                                                   ])
-    submit = SubmitField("Enregistrer l'examen")
+    patient_select = SelectField("Patient", choices=[], validators=[DataRequired()])
+    type_examen = StringField("Type d'examen", validators=[DataRequired()])
+    resultats_examen = StringField("Résultats de l'examen", validators=[DataRequired()])
+    jour_examen = SelectField("Jour", choices=[(str(i), str(i)) for i in range(1, 32)], validators=[DataRequired()])
+    mois_examen = SelectField("Mois", choices=[(str(i), str(i)) for i in range(1, 13)], validators=[DataRequired()])
+    current_year = datetime.now().year
+    annee_examen = SelectField(
+        "Année",
+        choices=[(str(i), str(i)) for i in range(current_year, 1999, -1)],  # Par exemple de 2025 à 2000
+        validators=[DataRequired()]
+    )
+    submit = SubmitField("Ajouter")
 
 
 class FormWTFUpdateExamen(FlaskForm):
-    """
-        Dans le formulaire "genre_update_wtf.html" on impose que le champ soit rempli.
-        Définition d'un "bouton" submit avec un libellé personnalisé.
-    """
-    nom_genre_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_genre_update_wtf = StringField("Clavioter le genre ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                          Regexp(nom_genre_update_regexp,
-                                                                                 message="Pas de chiffres, de "
-                                                                                         "caractères "
-                                                                                         "spéciaux, "
-                                                                                         "d'espace à double, de double "
-                                                                                         "apostrophe, de double trait "
-                                                                                         "union")
-                                                                          ])
-    date_genre_wtf_essai = DateField("Essai date", validators=[InputRequired("Date obligatoire"),
-                                                               DataRequired("Date non valide")])
-    submit = SubmitField("Update genre")
+    patient_select = SelectField("Patient", choices=[], validators=[DataRequired()])
+    type_examen = StringField("Type d'examen", validators=[DataRequired()])
+    resultats_examen = StringField("Résultats de l'examen", validators=[DataRequired()])
+    jour_examen = SelectField("Jour", choices=[(str(i), str(i)) for i in range(1, 32)], validators=[DataRequired()])
+    mois_examen = SelectField("Mois", choices=[(str(i), str(i)) for i in range(1, 13)], validators=[DataRequired()])
+    annee_examen = SelectField("Année", choices=[(str(i), str(i)) for i in range(datetime.now().year, 1999, -1)], validators=[DataRequired()])
+    submit = SubmitField("Mettre à jour")
 
 
 class FormWTFDeleteExamen(FlaskForm):
-    """
-        Dans le formulaire "examen_delete_wtf.html"
-
-        nom_genre_delete_wtf : Champ qui reçoit la valeur du genre, lecture seule. (readonly=true)
-        submit_btn_del : Bouton d'effacement "DEFINITIF".
-        submit_btn_conf_del : Bouton de confirmation pour effacer un "genre".
-        submit_btn_annuler : Bouton qui permet d'afficher la table "t_genre".
-    """
-    nom_genre_delete_wtf = StringField("Effacer ce genre")
-    submit_btn_del = SubmitField("Effacer genre")
-    submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
+    patient = StringField("Patient")
+    type_examen = StringField("Type d'examen")
+    resultats_examen = StringField("Résultat de l'examen")
+    submit_btn_conf_del = SubmitField("Confirmer la suppression")
     submit_btn_annuler = SubmitField("Annuler")

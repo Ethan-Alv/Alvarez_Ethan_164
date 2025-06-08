@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Ajouter une consultation{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Ajouter une anamnèse</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.patient_select.label }} {{ form.patient_select(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.histoire_de_vie_anamn.label }} {{ form.histoire_de_vie_anamn(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.antecedent_medicaux_anamn.label }} {{ form.antecedent_medicaux_anamn(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.probleme_anamn.label }} {{ form.probleme_anamn(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.allergies_anamn.label }} {{ form.allergies_anamn(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+</div>
+{% endblock %}

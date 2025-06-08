@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Effacer un GENRE (WTF) {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Supprimer cette consultation ?</h3>
+    <form method="POST">
+        {{ form_delete.hidden_tag() }}
+        <div class="form-group">
+            {{ form_delete.patient.label }}
+            {{ form_delete.patient(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.motif_consult.label }}
+            {{ form_delete.motif_consult(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.diagnostic_consult.label }}
+            {{ form_delete.diagnostic_consult(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.submit_btn_conf_del(class="btn btn-danger") }}
+            {{ form_delete.submit_btn_annuler(class="btn btn-secondary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
+

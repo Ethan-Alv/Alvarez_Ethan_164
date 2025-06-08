@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Afficher Signes Vitaux{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Signes vitaux</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('signe_vital_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Valeurs</th>
+                <th>Patient</th>
+                <th colspan="3" class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for signe in data %}
+            <tr>
+                <td>{{ signe.id_signe_vital }}</td>
+                <td>{{ signe.date_signe }}</td>
+                <td>{{ signe.type_signe }}</td>
+                <td>{{ signe.valeurs_signe }}</td>
+                <td>{{ signe.nom_patient }} {{ signe.prenom_patient }}</td>
+                <td><a class="btn btn-warning" href="{{ url_for('signe_vital_update_wtf', id_signe_vital=signe.id_signe_vital) }}">Edit</a></td>
+                <td><a class="btn btn-danger" href="{{ url_for('signe_vital_delete_wtf', id_signe_vital=signe.id_signe_vital) }}">Delete</a></td>
+                <td><a class="btn btn-info" href="{{ url_for('signe_vital_info', id_signe_vital=signe.id_signe_vital) }}">Info</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucun signe vital.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

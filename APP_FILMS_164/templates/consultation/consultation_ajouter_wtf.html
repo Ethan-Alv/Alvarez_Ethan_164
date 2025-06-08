@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Ajouter une consultation{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Ajouter une consultation</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.patient_select.label }} {{ form.patient_select(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.date_consult.label }} {{ form.date_consult(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.motif_consult.label }} {{ form.motif_consult(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.diagnostic_consult.label }} {{ form.diagnostic_consult(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.notes_consult.label }} {{ form.notes_consult(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
+</div>
+{% endblock %}

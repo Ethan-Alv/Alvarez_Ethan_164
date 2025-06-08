@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Modifier un signe vital</h3>
+    <form method="POST">
+        {{ form_update.hidden_tag() }}
+        <div class="form-group">
+            {{ form_update.date_signe.label }} {{ form_update.date_signe(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.type_signe.label }} {{ form_update.type_signe(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.valeurs_signe.label }} {{ form_update.valeurs_signe(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.patient_select.label }} {{ form_update.patient_select(class="form-control") }}
+        </div>
+        {{ form_update.submit(class="btn btn-warning") }}
+    </form>
+</div>
+{% endblock %}

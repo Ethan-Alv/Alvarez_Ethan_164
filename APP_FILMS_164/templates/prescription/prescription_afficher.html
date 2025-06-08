@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Prescriptions</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('prescription_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Patient</th>
+                <th>Posologie</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for prescription in data %}
+            <tr>
+                <td>{{ prescription.id_prescription }}</td>
+                <td>{{ prescription.nom_patient or '' }} {{ prescription.prenom_patient or '' }}</td>
+                <td>{{ prescription.posologie_prescr or '' }}</td>
+                <td>
+                    <a class="btn btn-warning" href="{{ url_for('prescription_update_wtf', id_prescription=prescription.id_prescription) }}">Edit</a>
+                    <a class="btn btn-danger" href="{{ url_for('prescription_delete_wtf', id_prescription=prescription.id_prescription) }}">Delete</a>
+                    <a class="btn btn-info" href="{{ url_for('prescription_info', id_prescription=prescription.id_prescription) }}">Info</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" class="text-center">Aucune prescription.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

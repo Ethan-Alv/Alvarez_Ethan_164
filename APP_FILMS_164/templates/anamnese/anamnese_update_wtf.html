@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Editer un GENRE (WTF) {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Modifier un examen</h3>
+        <form method="POST">
+            {{ form_update.hidden_tag() }}
+            <div class="form-group">
+                {{ form_update.patient_select.label }} {{ form_update.patient_select(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form_update.histoire_de_vie_anamn.label }} {{ form_update.histoire_de_vie_anamn(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form_update.antecedent_medicaux_anamn.label }} {{ form_update.antecedent_medicaux_anamn(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form_update.probleme_anamn.label }} {{ form_update.probleme_anamn(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form_update.allergies_anamn.label }} {{ form_update.allergies_anamn(class="form-control") }}
+            </div>
+        {{ form_update.submit(class="btn btn-success") }}
+    </form>
+</div>
+{% endblock %}
+

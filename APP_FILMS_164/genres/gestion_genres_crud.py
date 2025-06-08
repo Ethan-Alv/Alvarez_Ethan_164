@@ -13,7 +13,7 @@ from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterGenres
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
+from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteDossier
 from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 
 """
@@ -34,26 +34,58 @@ def genres_afficher(order_by, id_genre_sel):
         try:
             with DBconnection() as mc_afficher:
                 if order_by == "ASC" and id_genre_sel == 0:
-                    strsql_genres_afficher = """SELECT * FROM t_dossier"""
+                    strsql_genres_afficher = """SELECT
+                                                    dp.fk_dossier AS id_dossier,
+                                                    p.nom_patient,
+                                                    p.prenom_patient,
+                                                    d.statut_dossier
+                                                FROM
+                                                    t_dossier_patient dp
+                                                JOIN
+                                                    t_patient p ON dp.fk_patient = p.id_patient
+                                                JOIN
+                                                    t_dossier d ON dp.fk_dossier = d.id_dossier
+                                                ORDER BY
+                                                    dp.fk_dossier, p.nom_patient, p.prenom_patient;"""
                     mc_afficher.execute(strsql_genres_afficher)
                 elif order_by == "ASC":
-                    # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
-                    # la commande MySql classique est "SELECT * FROM t_genre"
-                    # Pour "lever"(raise) une erreur s'il y a des erreurs sur les noms d'attributs dans la table
-                    # donc, je précise les champs à afficher
-                    # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
-                    valeur_id_genre_selected_dictionnaire = {"value_id_genre_selected": id_genre_sel}
-                    strsql_genres_afficher = """SELECT * FROM t_dossier WHERE id_dossier = 1"""
-
+                    valeur_id_genre_selected_dictionnaire = {"id_dossier": id_genre_sel}
+                    strsql_genres_afficher = """SELECT
+                                                    dp.fk_dossier AS id_dossier,
+                                                    p.nom_patient,
+                                                    p.prenom_patient,
+                                                    d.statut_dossier
+                                                FROM
+                                                    t_dossier_patient dp
+                                                JOIN
+                                                    t_patient p ON dp.fk_patient = p.id_patient
+                                                JOIN
+                                                    t_dossier d ON dp.fk_dossier = d.id_dossier
+                                                WHERE
+                                                    dp.fk_dossier = %(id_dossier)s
+                                                ORDER BY
+                                                    dp.fk_dossier, p.nom_patient, p.prenom_patient;"""
                     mc_afficher.execute(strsql_genres_afficher, valeur_id_genre_selected_dictionnaire)
                 else:
-                    strsql_genres_afficher = """SELECT * FROM t_dossier"""
+                    strsql_genres_afficher = """SELECT
+                                                    dp.fk_dossier AS id_dossier,
+                                                    p.nom_patient,
+                                                    p.prenom_patient,
+                                                    d.statut_dossier
+                                                FROM
+                                                    t_dossier_patient dp
+                                                JOIN
+                                                    t_patient p ON dp.fk_patient = p.id_patient
+                                                JOIN
+                                                    t_dossier d ON dp.fk_dossier = d.id_dossier
+                                                ORDER BY
+                                                    dp.fk_dossier, p.nom_patient, p.prenom_patient;"""
 
                     mc_afficher.execute(strsql_genres_afficher)
 
                 data_genres = mc_afficher.fetchall()
 
-                print("data_genres ", data_genres, " Type : ", type(data_genres))
+                print("data_dossier ", data_genres, " Type : ", type(data_genres))
 
                 # Différencier les messages si la table est vide.
                 if not data_genres and id_genre_sel == 0:
@@ -98,29 +130,71 @@ def genres_afficher(order_by, id_genre_sel):
 @app.route("/genres_ajouter", methods=['GET', 'POST'])
 def genres_ajouter_wtf():
     form = FormWTFAjouterGenres()
+    # Remplir la liste déroulante des patients sans dossier
+    with DBconnection() as mconn_bd:
+        mconn_bd.execute("""
+            SELECT id_patient, nom_patient, prenom_patient
+            FROM t_patient
+            WHERE id_patient NOT IN (SELECT fk_patient FROM t_dossier_patient WHERE fk_patient IS NOT NULL)
+        """)
+        patients = mconn_bd.fetchall()
+        form.patient.choices = [(row["id_patient"], f"{row['nom_patient']} {row['prenom_patient']}") for row in patients]
+
     if request.method == "POST":
+        print("POST reçu")
+        print(form.errors)
+        print("submit.data =", form.submit.data)
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.nom_genre_wtf.data
-#                name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre_wtf}
-                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
-#"""INSERT INTO `t_dossier` (`id_dossier`, `ouverture_dossier`, `cloture_dossier`, `statut_dossier`) VALUES (NULL, '2025-04-02', NULL, 'dfgddgdfg');"""
-                strsql_insert_genre = """INSERT INTO t_dossier (id_dossier,statut_dossier) VALUES (NULL,%(value_intitule_genre)s) """
+                print(">>> DANS LE BLOC VALIDATE_ON_SUBMIT")
+                # Recompose la date d'ouverture
+                ouverture = f"{form.ouverture_annee.data}-{form.ouverture_mois.data}-{form.ouverture_jour.data}"
+                # Recompose la date de cloture si tous les champs sont remplis, sinon None
+                if form.cloture_jour.data and form.cloture_mois.data and form.cloture_annee.data:
+                    cloture = f"{form.cloture_annee.data}-{form.cloture_mois.data}-{form.cloture_jour.data}"
+                else:
+                    cloture = None
+                statut = form.statut_dossier.data
+                patient_id = form.patient.data
+
+                # Si cloture n'est pas une date valide (None ou format incorrect), on force à None
+                if not cloture or str(cloture) in ["", "None", "jj.mm.aaaa"]:
+                    cloture = None
+
+                # Validation personnalisée
+                if statut != "Actif" and not cloture:
+                    flash("La date de clôture est obligatoire si le dossier n'est pas Actif.", "danger")
+                    return render_template("genres/genres_ajouter_wtf.html", form=form)
+
+                valeurs_insertion_dictionnaire = {
+                    "ouverture": ouverture,
+                    "cloture": cloture,
+                    "statut": statut,
+                    "fk_patient": patient_id
+                }
+                strsql_insert_dossier = """
+                    INSERT INTO t_dossier (ouverture_dossier, cloture_dossier, statut_dossier)
+                    VALUES (%(ouverture)s, %(cloture)s, %(statut)s)
+                """
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
+                    mconn_bd.execute(strsql_insert_dossier, valeurs_insertion_dictionnaire)
+                    id_dossier = mconn_bd.lastrowid
 
-                flash(f"Données insérées !!", "success")
-                print(f"Données insérées !!")
-
-                # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
+                    strsql_insert_dossier_patient = """
+                        INSERT INTO t_dossier_patient (fk_patient, fk_dossier)
+                        VALUES (%(fk_patient)s, %(fk_dossier)s)
+                    """
+                    valeurs_relation = {
+                        "fk_patient": patient_id,
+                        "fk_dossier": id_dossier
+                    }
+                    mconn_bd.execute(strsql_insert_dossier_patient, valeurs_relation)
+                    
+                flash(f"Dossier ajouté !", "success")
                 return redirect(url_for('genres_afficher', order_by='DESC', id_genre_sel=0))
-
         except Exception as Exception_genres_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{genres_ajouter_wtf.__name__} ; "
-                                            f"{Exception_genres_ajouter_wtf}")
-
+            print("ERREUR SQL/PYTHON :", Exception_genres_ajouter_wtf)  # <-- Ajoute ceci
+            flash("Erreur lors de l'ajout du dossier.", "danger")
     return render_template("genres/genres_ajouter_wtf.html", form=form)
 
 
@@ -144,61 +218,87 @@ def genres_ajouter_wtf():
 """
 
 
-@app.route("/genre_update", methods=['GET', 'POST'])
-def genre_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
-    id_genre_update = request.values['id_genre_btn_edit_html']
+@app.route("/dossier_update/<int:id_dossier>", methods=['GET', 'POST'])
+def dossier_update_wtf(id_dossier):
+    form = FormWTFUpdateGenre()
+    # Remplir la liste déroulante des patients
+    with DBconnection() as mconn_bd:
+        mconn_bd.execute("""
+            SELECT id_patient, nom_patient, prenom_patient
+            FROM t_patient
+        """)
+        patients = mconn_bd.fetchall()
+        form.patient.choices = [(row["id_patient"], f"{row['nom_patient']} {row['prenom_patient']}") for row in patients]
 
-    # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdateGenre()
     try:
-        # 2023.05.14 OM S'il y a des listes déroulantes dans le formulaire
-        # La validation pose quelques problèmes
-        if request.method == "POST" and form_update.submit.data:
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
-            # Puis la convertir en lettres minuscules.
-            name_genre_update = form_update.nom_genre_update_wtf.data
-            name_genre_update = name_genre_update.lower()
-            date_genre_essai = form_update.date_genre_wtf_essai.data
+        if request.method == "POST" and form.submit.data:
+            ouverture = f"{form.ouverture_annee.data}-{form.ouverture_mois.data}-{form.ouverture_jour.data}"
+            if form.cloture_jour.data and form.cloture_mois.data and form.cloture_annee.data:
+                cloture = f"{form.cloture_annee.data}-{form.cloture_mois.data}-{form.cloture_jour.data}"
+            else:
+                cloture = None
+            statut = form.statut_dossier.data
+            patient_id = form.patient.data
 
-            valeur_update_dictionnaire = {"value_id_genre": id_genre_update,
-                                          "value_name_genre": name_genre_update,
-                                          "value_date_genre_essai": date_genre_essai
-                                          }
-            print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
+            # Validation personnalisée
+            if statut != "Actif" and not cloture:
+                flash("La date de clôture est obligatoire si le dossier n'est pas Actif.", "danger")
+                return render_template("genres/genre_update_wtf.html", form=form)
 
-            str_sql_update_intitulegenre = """UPDATE t_genre SET intitule_genre = %(value_name_genre)s, 
-            date_ins_genre = %(value_date_genre_essai)s WHERE id_genre = %(value_id_genre)s """
+            valeurs_update = {
+                "ouverture": ouverture,
+                "cloture": cloture,
+                "statut": statut,
+                "id_dossier": id_dossier
+            }
+            str_sql_update_dossier = """
+                UPDATE t_dossier
+                SET ouverture_dossier = %(ouverture)s,
+                    cloture_dossier = %(cloture)s,
+                    statut_dossier = %(statut)s
+                WHERE id_dossier = %(id_dossier)s
+            """
             with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
+                mconn_bd.execute(str_sql_update_dossier, valeurs_update)
+                # Mettre à jour la liaison patient-dossier
+                str_sql_update_liaison = """
+                    UPDATE t_dossier_patient
+                    SET fk_patient = %(fk_patient)s
+                    WHERE fk_dossier = %(id_dossier)s
+                """
+                mconn_bd.execute(str_sql_update_liaison, {"fk_patient": patient_id, "id_dossier": id_dossier})
 
-            flash(f"Donnée mise à jour !!", "success")
-            print(f"Donnée mise à jour !!")
+            flash("Dossier mis à jour !", "success")
+            return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
 
-            # afficher et constater que la donnée est mise à jour.
-            # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_genre_update))
         elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-            str_sql_id_genre = "SELECT * FROM t_dossier"
-            valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
-            with DBconnection() as mybd_conn:
-                mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
-            # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                  data_nom_genre["intitule_genre"])
+            # Charger les données existantes
+            str_sql = """
+                SELECT d.*, dp.fk_patient
+                FROM t_dossier d
+                JOIN t_dossier_patient dp ON d.id_dossier = dp.fk_dossier
+                WHERE d.id_dossier = %(id_dossier)s
+            """
+            with DBconnection() as mconn_bd:
+                mconn_bd.execute(str_sql, {"id_dossier": id_dossier})
+                data = mconn_bd.fetchone()
+            # Pré-remplir le formulaire
+            if data:
+                form.ouverture_jour.data = data["ouverture_dossier"].day
+                form.ouverture_mois.data = str(data["ouverture_dossier"].month).zfill(2)
+                form.ouverture_annee.data = str(data["ouverture_dossier"].year)
+                if data["cloture_dossier"]:
+                    form.cloture_jour.data = str(data["cloture_dossier"].day).zfill(2)
+                    form.cloture_mois.data = str(data["cloture_dossier"].month).zfill(2)
+                    form.cloture_annee.data = str(data["cloture_dossier"].year)
+                form.statut_dossier.data = data["statut_dossier"]
+                form.patient.data = data["fk_patient"]
 
-            # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["intitule_genre"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["date_ins_genre"]
+    except Exception as e:
+        flash("Erreur lors de la mise à jour du dossier.", "danger")
+        print(e)
 
-    except Exception as Exception_genre_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_update_wtf.__name__} ; "
-                                      f"{Exception_genre_update_wtf}")
-
-    return render_template("genres/genre_update_wtf.html", form_update=form_update)
+    return render_template("genres/genre_update_wtf.html", form=form)
 
 
 """
@@ -215,90 +315,74 @@ def genre_update_wtf():
                 le contrôle de la saisie est désactivée. On doit simplement cliquer sur "DELETE"
 """
 
-
-@app.route("/genre_delete", methods=['GET', 'POST'])
-def genre_delete_wtf():
-    data_films_attribue_genre_delete = None
-    btn_submit_del = None
-    # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
-    id_genre_delete = request.values['id_genre_btn_delete_html']
-
-    # Objet formulaire pour effacer le genre sélectionné.
-    form_delete = FormWTFDeleteGenre()
+@app.route("/dossier_info/<int:id_dossier>", methods=['GET'])
+def dossier_info(id_dossier):
     try:
-        print(" on submit ", form_delete.validate_on_submit())
-        if request.method == "POST" and form_delete.validate_on_submit():
+        with DBconnection() as mc_info:
+            strsql_info = """
+                SELECT
+                    p.id_patient, p.nom_patient, p.prenom_patient, p.date_naissance_pers,
+                    p.localite_patient, p.code_postal_patient, p.nom_rue_patient, p.numero_rue_patient,
+                    p.telephone_patient, p.email_patient,
+                    d.id_dossier, d.ouverture_dossier, d.cloture_dossier, d.statut_dossier
+                FROM t_dossier_patient dp
+                JOIN t_patient p ON dp.fk_patient = p.id_patient
+                JOIN t_dossier d ON dp.fk_dossier = d.id_dossier
+                WHERE d.id_dossier = %(id_dossier)s
+            """
+            mc_info.execute(strsql_info, {"id_dossier": id_dossier})
+            data_info = mc_info.fetchone()
+        return render_template("genres/dossier_info.html", data=data_info)
+    except Exception as e:
+        flash("Erreur lors de la récupération des infos du dossier.", "danger")
+        return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
 
+@app.route("/dossier_delete/<int:id_dossier>", methods=['GET', 'POST'])
+def dossier_delete_wtf(id_dossier):
+    form_delete = FormWTFDeleteDossier()
+    try:
+        if request.method == "POST" and form_delete.validate_on_submit():
             if form_delete.submit_btn_annuler.data:
                 return redirect(url_for("genres_afficher", order_by="ASC", id_genre_sel=0))
 
             if form_delete.submit_btn_conf_del.data:
-                # Récupère les données afin d'afficher à nouveau
-                # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                data_films_attribue_genre_delete = session['data_films_attribue_genre_delete']
-                print("data_films_attribue_genre_delete ", data_films_attribue_genre_delete)
-
-                flash(f"Effacer le genre de façon définitive de la BD !!!", "danger")
-                # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
-                # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
-                btn_submit_del = True
+                # Affiche le bouton "Effacer dossier" pour confirmation
+                return render_template("genres/dossier_delete_wtf.html", form_delete=form_delete, btn_submit_del=True)
 
             if form_delete.submit_btn_del.data:
-                valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
-                print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
-
-                str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_genre WHERE id_genre = %(value_id_genre)s"""
-                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
-                # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
+                # Suppression réelle : supprimer toutes les références au dossier dans les tables liées
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
-                    mconn_bd.execute(str_sql_delete_idgenre, valeur_delete_dictionnaire)
-
-                flash(f"Genre définitivement effacé !!", "success")
-                print(f"Genre définitivement effacé !!")
-
-                # afficher les données
+                    mconn_bd.execute("DELETE FROM t_dossier_anamnese WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier_examen WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier_patient WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier_prescription WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier_rapport WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier_signe_vital WHERE fk_dossier = %(id)s", {"id": id_dossier})
+                    mconn_bd.execute("DELETE FROM t_dossier WHERE id_dossier = %(id)s", {"id": id_dossier})
+                flash("Dossier supprimé !", "success")
                 return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
 
-        if request.method == "GET":
-            valeur_select_dictionnaire = {"value_id_genre": id_genre_delete}
-            print(id_genre_delete, type(id_genre_delete))
+        elif request.method == "GET":
+            # Charger les infos du dossier et du patient
+            with DBconnection() as mconn_bd:
+                mconn_bd.execute("""
+                    SELECT d.ouverture_dossier, d.cloture_dossier, d.statut_dossier,
+                           p.nom_patient, p.prenom_patient
+                    FROM t_dossier d
+                    JOIN t_dossier_patient dp ON d.id_dossier = dp.fk_dossier
+                    JOIN t_patient p ON dp.fk_patient = p.id_patient
+                    WHERE d.id_dossier = %(id)s
+                """, {"id": id_dossier})
+                data = mconn_bd.fetchone()
+            # Pré-remplir le formulaire en lecture seule
+            if data:
+                form_delete.ouverture.data = data["ouverture_dossier"]
+                form_delete.cloture.data = data["cloture_dossier"] or "Non clôturé"
+                form_delete.statut.data = data["statut_dossier"]
+                form_delete.patient.data = f"{data['nom_patient']} {data['prenom_patient']}"
 
-            # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT * FROM t_dossier"""
+    except Exception as e:
+        flash("Erreur lors de la suppression du dossier.", "danger")
+        print(e)
 
-            with DBconnection() as mydb_conn:
-                mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
-                data_films_attribue_genre_delete = mydb_conn.fetchall()
-                print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
-
-                # Nécessaire pour mémoriser les données afin d'afficher à nouveau
-                # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
-
-                # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_genre = "SELECT * FROM t_dossier"
-
-                mydb_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
-                # Une seule valeur est suffisante "fetchone()",
-                # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
-                data_nom_genre = mydb_conn.fetchone()
-                print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                      data_nom_genre["intitule_genre"])
-
-            # Afficher la valeur sélectionnée dans le champ du formulaire "genre_delete_wtf.html"
-            form_delete.nom_genre_delete_wtf.data = data_nom_genre["intitule_genre"]
-
-            # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
-            btn_submit_del = False
-
-    except Exception as Exception_genre_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_delete_wtf.__name__} ; "
-                                      f"{Exception_genre_delete_wtf}")
-
-    return render_template("genres/genre_delete_wtf.html",
-                           form_delete=form_delete,
-                           btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_genre_delete)
+    return render_template("genres/dossier_delete_wtf.html", form_delete=form_delete, btn_submit_del=False)

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Informations sur le signe vital</h3>
+    <table class="table table-bordered">
+        <tr><th>Id</th><td>{{ data.id_signe_vital }}</td></tr>
+        <tr><th>Date</th><td>{{ data.date_signe }}</td></tr>
+        <tr><th>Type</th><td>{{ data.type_signe }}</td></tr>
+        <tr><th>Valeurs</th><td>{{ data.valeurs_signe }}</td></tr>
+        <tr><th>Patient</th><td>{{ data.nom_patient }} {{ data.prenom_patient }}</td></tr>
+    </table>
+    <a href="{{ url_for('signes_vitaux_afficher', order_by='ASC', id_signe_vital_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}with DBconnection() as mc:

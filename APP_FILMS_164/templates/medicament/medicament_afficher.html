@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Afficher Médicaments{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Médicaments</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('medicament_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Dosage</th>
+                <th>Forme</th>
+                <th colspan="3" class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for medicament in data %}
+            <tr>
+                <td>{{ medicament.id_medicament }}</td>
+                <td>{{ medicament.nom_medic }}</td>
+                <td>{{ medicament.dosage_medic }}</td>
+                <td>{{ medicament.forme_medic }}</td>
+                <td><a class="btn btn-warning" href="{{ url_for('medicament_update_wtf', id_medicament=medicament.id_medicament) }}">Edit</a></td>
+                <td><a class="btn btn-danger" href="{{ url_for('medicament_delete_wtf', id_medicament=medicament.id_medicament) }}">Delete</a></td>
+                <td><a class="btn btn-info" href="{{ url_for('medicament_info', id_medicament=medicament.id_medicament) }}">Info</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucun médicament.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

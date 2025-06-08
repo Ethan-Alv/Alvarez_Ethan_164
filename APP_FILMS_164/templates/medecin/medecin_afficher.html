@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Médecins</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('medecin_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Email</th> <!-- Ajout de la colonne Email -->
+                <th colspan="3" class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for medecin in data %}
+            <tr>
+                <td>{{ medecin.id_medecin }}</td>
+                <td>{{ medecin.nom_medecin }}</td>
+                <td>{{ medecin.prenom_medecin }}</td>
+                <td>{{ medecin.telephone_medecin }}</td>
+                <td>{{ medecin.email_medecin }}</td> <!-- Affichage de l'email -->
+                <td><a class="btn btn-warning" href="{{ url_for('medecin_update_wtf', id_medecin=medecin.id_medecin) }}">Edit</a></td>
+                <td><a class="btn btn-danger" href="{{ url_for('medecin_delete_wtf', id_medecin=medecin.id_medecin) }}">Delete</a></td>
+                <td><a class="btn btn-info" href="{{ url_for('medecin_info', id_medecin=medecin.id_medecin) }}">Info</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8" class="text-center">Aucun médecin.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Info Anamnèse{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Informations sur l'anamnèse</h3>
+    <table class="table table-bordered">
+        <tr><th>Id</th><td>{{ data.id_anamnese }}</td></tr>
+        <tr><th>Nom</th><td>{{ data.nom_patient }}</td></tr>
+        <tr><th>Prénom</th><td>{{ data.prenom_patient }}</td></tr>
+        <tr><th>Histoire de vie</th><td>{{ data.histoire_de_vie_anamn }}</td></tr>
+        <tr><th>Antécédents médicaux</th><td>{{ data.antecedent_medicaux_anamn }}</td></tr>
+        <tr><th>Problèmes</th><td>{{ data.probleme_anamn }}</td></tr>
+        <tr><th>Allergies</th><td>{{ data.allergies_anamn }}</td></tr>
+    </table>
+    <a href="{{ url_for('anamneses_afficher', order_by='ASC', id_anamnese_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

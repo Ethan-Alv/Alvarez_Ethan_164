@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Modifier un rapport</h3>
+    <form method="POST">
+        {{ form_update.hidden_tag() }}
+        <div class="form-group">
+            {{ form_update.patient_select.label }} {{ form_update.patient_select(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.date_rapport.label }} {{ form_update.date_rapport(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.type_rapport.label }} {{ form_update.type_rapport(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.texte_rapport.label }} {{ form_update.texte_rapport(class="form-control") }}
+        </div>
+        {{ form_update.submit(class="btn btn-warning") }}
+    </form>
+</div>
+{% endblock %}

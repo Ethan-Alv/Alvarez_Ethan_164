@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} Afficher CONSULTATIONS {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Consultations</h3>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th class="align-middle">Id</th>
+                <th class="align-middle">Patient</th>
+                <th class="align-middle">Motif</th>
+                <th colspan="4" class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for consultation in data %}
+            <tr>
+                <td>{{ consultation.id_consultation }}</td>
+                <td>{{ consultation.nom_patient }} {{ consultation.prenom_patient }}</td>
+                <td>{{ consultation.motif_consult }}</td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-primary" href="{{ url_for('consultation_ajouter_wtf') }}" role="button">Ajouter</a>
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-warning" href="{{ url_for('consultation_update_wtf', id_consultation=consultation.id_consultation) }}" role="button">Edit</a>
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-danger" href="{{ url_for('consultation_delete_wtf', id_consultation=consultation.id_consultation) }}" role="button">Delete</a>
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-info" href="{{ url_for('consultation_info', id_consultation=consultation.id_consultation) }}" role="button">Info</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucune consultation.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

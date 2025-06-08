@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %} Infos Examen {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Informations de l'examen</h3>
+    {% if data %}
+    <table class="table table-bordered">
+        <tr><th colspan="2">Patient</th></tr>
+        <tr><td>ID Consultation</td><td>{{ data.id_consultation }}</td></tr>
+        <tr><td>Motif de la consultation</td><td>{{ data.motif_consult }}</td></tr>
+        <tr><td>Diagnostic de la consultation</td><td>{{ data.diagnostic_consult }}</td></tr>
+        <tr><td>Notes</td><td>{{ data.notes_consult }}</td></tr>
+        <tr><td>Date de la consultation</td><td>{{ data.date_consult }}</td></tr>
+        <tr><td>Nom patient</td><td>{{ data.nom_patient }}</td></tr>
+        <tr><td>Prénom patient</td><td>{{ data.prenom_patient }}</td></tr>
+    </table>
+    {% else %}
+        <p>Aucune information trouvée.</p>
+    {% endif %}
+    <a href="{{ url_for('consultations_afficher', order_by='ASC', id_consultation_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

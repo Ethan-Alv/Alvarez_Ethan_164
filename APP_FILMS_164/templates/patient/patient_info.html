@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %} Infos Examen {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Informations du patient</h3>
+    {% if data %}
+    <table class="table table-bordered">
+        <tr><td>ID</td><td>{{ data.id_patient }}</td></tr>
+        <tr><td>Nom</td><td>{{ data.nom_patient }}</td></tr>
+        <tr><td>Prénom</td><td>{{ data.prenom_patient }}</td></tr>
+        <tr><td>Date de naissance</td><td>{{ data.date_naissance_pers }}</td></tr>
+        <tr><td>Localité</td><td>{{ data.localite_patient }}</td></tr>
+        <tr>
+            <td>Adresse</td>
+            <td>
+                {{ data.code_postal_patient }}&nbsp;
+                {{ data.nom_rue_patient }}&nbsp;
+                {{ data.numero_rue_patient }}
+            </td>
+        </tr>
+        <tr><td>Téléphone</td><td>{{ data.telephone_patient }}</td></tr>
+        <tr><td>Email</td><td>{{ data.email_patient }}</td></tr>
+    </table>
+    {% else %}
+        <p>Aucune information trouvée.</p>
+    {% endif %}
+    <a href="{{ url_for('patient_afficher', order_by='ASC', id_patient_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

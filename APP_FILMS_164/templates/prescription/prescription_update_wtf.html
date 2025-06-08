@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Modifier une prescription</h3>
+    {% if form_update.errors %}
+        <div class="alert alert-danger">
+            <ul>
+            {% for field, errors in form_update.errors.items() %}
+                {% for error in errors %}
+                    <li>{{ form_update[field].label.text }} : {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="POST">
+        {{ form_update.hidden_tag() }}
+        <div class="form-group">
+            {{ form_update.patient_select.label }} {{ form_update.patient_select(class="form-control") }}
+            {% for error in form_update.patient_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_update.medecin_select.label }} {{ form_update.medecin_select(class="form-control") }}
+            {% for error in form_update.medecin_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_update.medicament_select.label }} {{ form_update.medicament_select(class="form-control") }}
+            {% for error in form_update.medicament_select.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form_update.posologie_prescr.label }} {{ form_update.posologie_prescr(class="form-control") }}
+            {% for error in form_update.posologie_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_update.duree_traitement_prescr.label }} {{ form_update.duree_traitement_prescr(class="form-control") }}
+            {% for error in form_update.duree_traitement_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_update.debut_prescr.label }} {{ form_update.debut_prescr(class="form-control") }}
+            {% for error in form_update.debut_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form_update.fin_prescr.label }} {{ form_update.fin_prescr(class="form-control") }}
+            {% for error in form_update.fin_prescr.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {{ form_update.submit(class="btn btn-warning") }}
+    </form>
+</div>
+{% endblock %}

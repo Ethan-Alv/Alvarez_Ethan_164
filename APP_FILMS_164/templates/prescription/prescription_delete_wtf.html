@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Supprimer une prescription</h3>
+    <form method="POST">
+        {{ form_delete.hidden_tag() }}
+        <div class="form-group">
+            {{ form_delete.patient_select.label }} {{ form_delete.patient_select(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.medecin.label }} {{ form_delete.medecin(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.medicament.label }} {{ form_delete.medicament(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.posologie_prescr.label }} {{ form_delete.posologie_prescr(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.duree_traitement_prescr.label }} {{ form_delete.duree_traitement_prescr(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.debut_prescr.label }} {{ form_delete.debut_prescr(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.fin_prescr.label }} {{ form_delete.fin_prescr(class="form-control", readonly=true) }}
+        </div>
+        {{ form_delete.submit_btn_conf_del(class="btn btn-danger") }}
+        {{ form_delete.submit_btn_annuler(class="btn btn-secondary") }}
+    </form>
+</div>
+{% endblock %}

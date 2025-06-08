@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Afficher Rapports{% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Rapports</h3>
+    <a class="btn btn-success mb-2" href="{{ url_for('rapport_ajouter_wtf') }}">Ajouter</a>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom patient</th>
+                <th>Prénom patient</th>
+                <th>Type de rapport</th>
+                <th colspan="3" class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for rapport in data %}
+            <tr>
+                <td>{{ rapport.id_rapport }}</td>
+                <td>{{ rapport.nom_patient }}</td>
+                <td>{{ rapport.prenom_patient }}</td>
+                <td>{{ rapport.type_rapport }}</td>
+                <td><a class="btn btn-warning" href="{{ url_for('rapport_update_wtf', id_rapport=rapport.id_rapport) }}">Edit</a></td>
+                <td><a class="btn btn-danger" href="{{ url_for('rapport_delete_wtf', id_rapport=rapport.id_rapport) }}">Delete</a></td>
+                <td><a class="btn btn-info" href="{{ url_for('rapport_info', id_rapport=rapport.id_rapport) }}">Info</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Aucun rapport.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

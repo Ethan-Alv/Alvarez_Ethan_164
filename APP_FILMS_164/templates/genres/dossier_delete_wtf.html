@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %} Effacer un DOSSIER {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Effacer un dossier</h3>
+    <form method="POST">
+        {{ form_delete.hidden_tag() }}
+        <p>{{ form_delete.ouverture.label }}<br>{{ form_delete.ouverture(readonly=true) }}</p>
+        <p>{{ form_delete.cloture.label }}<br>{{ form_delete.cloture(readonly=true) }}</p>
+        <p>{{ form_delete.statut.label }}<br>{{ form_delete.statut(readonly=true) }}</p>
+        <p>{{ form_delete.patient.label }}<br>{{ form_delete.patient(readonly=true) }}</p>
+        {{ form_delete.submit_btn_conf_del(class="btn btn-info") }}
+        {% if btn_submit_del %}
+            {{ form_delete.submit_btn_del(class="btn btn-danger") }}
+        {% endif %}
+        {{ form_delete.submit_btn_annuler(class="btn btn-secondary") }}
+    </form>
+</div>
+{% endblock %}
+

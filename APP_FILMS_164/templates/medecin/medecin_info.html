@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Informations sur le médecin</h3>
+    <table class="table table-bordered">
+        <tr><th>Nom</th><td>{{ data.nom_medecin }}</td></tr>
+        <tr><th>Prénom</th><td>{{ data.prenom_medecin }}</td></tr>
+        <tr><th>Téléphone</th><td>{{ data.telephone_medecin }}</td></tr>
+        <tr><th>Email</th><td>{{ data.email_medecin }}</td></tr>
+    </table>
+    <a href="{{ url_for('medecins_afficher', order_by='ASC', id_medecin_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

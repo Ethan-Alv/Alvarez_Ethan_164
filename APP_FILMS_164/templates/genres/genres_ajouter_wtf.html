@@ -1,28 +1,57 @@
 {% extends "base.html" %}
-{% block title %} Ajouter un GENRE (WTF) {% endblock %}
+{% block title %} Ajouter un DOSSIER (WTF) {% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Ajouter un nouveau GENRE (WTForms)
-			</p>
-			<form action="" method="POST" novalidate>
-				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
-				{{ form.hidden_tag() }}
-				<div class="form-group">
-					<p>
-						{{ form.nom_genre_wtf.label }}<br>
-						{{ form.nom_genre_wtf(size=32) }}<br>
-						{% for error in form.nom_genre_wtf.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</p>
-				</div>
-				{{ form.submit(class="btn btn-primary") }}
-			</form>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                Ajouter un nouveau DOSSIER 
+            </p>
+            <form action="" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <p>
+                        {{ form.ouverture_jour.label }} {{ form.ouverture_jour() }}<br>
+                        {{ form.ouverture_mois.label }} {{ form.ouverture_mois() }}<br>
+                        {{ form.ouverture_annee.label }} {{ form.ouverture_annee() }}<br>
+                        {% for field in [form.ouverture_jour, form.ouverture_mois, form.ouverture_annee] %}
+                            {% for error in field.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form.cloture_jour.label }} {{ form.cloture_jour() }}<br>
+						{{ form.cloture_mois.label }} {{ form.cloture_mois() }}<br>
+						{{ form.cloture_annee.label }} {{ form.cloture_annee() }}<br>
+                        {% for field in [form.cloture_jour, form.cloture_mois, form.cloture_annee] %}
+                            {% for error in field.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form.statut_dossier.label }}<br>
+                        {{ form.statut_dossier() }}<br>
+                        {% for field in [form.statut_dossier] %}
+                            {% for error in field.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form.patient.label }}<br>
+                        {{ form.patient() }}<br>
+                        {% for field in [form.patient] %}
+                            {% for error in form.patient.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </p>
+                </div>
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
-

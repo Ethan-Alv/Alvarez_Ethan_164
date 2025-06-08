@@ -2,70 +2,46 @@
 {% block title %} Afficher EXAMENS {% endblock %}
 {% block body %}
 <div class="container">
+    <a class="btn btn-success mb-2" href="{{ url_for('examen_ajouter_wtf') }}">Ajouter</a>
 	<div class="row">
 		<div class="col-md-12">
 			<p>
 				Examens
 			</p>
             <table class="table table-bordered table-sm">
-            {% if data %}
-                <thead>
-                    <tr>
-                        <th class="align-middle">
-                            Id
-                        </th>
-                        <th class="align-middle">
-                            Type d'examen
-                        </th>
-                        <th class="align-middle">
-							Date insertion (pour exemple)
-                        </th>
-                        <th class="align-middle">
-
-                        </th>
-                        <th class="align-middle">
-
-                        </th>
-                    </tr>
-                </thead>
-            {% endif %}
-
-            {% for row in data %}
-				<tbody>
-					<tr>
-						<td class="align-middle">
-							{{ row.id_examen }}
-						</td>
-						<td class="align-middle">
-							{{ row.type_examen }}
-						</td>
-						<td class="align-middle">
-							{{ row.date_examen }}
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-primary" href="{{ url_for('examen_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-warning" href="{{ url_for('examen_update_wtf', id_examen_btn_edit_html=row.id_examen) }}" role="button">Edit</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-danger" href="{{ url_for('examen_delete_wtf', id_examen_btn_delete_html=row.id_examen) }}" role="button">Delete</a>
-						</td>
-					</tr>
-				</tbody>
-            {% else %}
-				<tbody>
-					<tr>
-						<td>
-							Aucun genre.
-						</td>
-						<td>
-							<a class="btn btn-primary" href="{{ url_for('genres_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-					</tr>
-				</tbody>
-            {% endfor %}
-			</table>
+    <thead>
+        <tr>
+            <th class="align-middle">Id</th>
+            <th class="align-middle">Type d'examen</th>
+            <th class="align-middle">Nom </th>
+            <th class="align-middle">Prénom </th>
+            <th colspan="3" class="text-center"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for examen in data %}
+        <tr>
+            <td>{{ examen.id_examen }}</td>
+            <td>{{ examen.type_examen }}</td>
+            <td>{{ examen.nom_patient }}</td>
+            <td>{{ examen.prenom_patient }}</td>
+            <td class="text-center align-middle">
+                <a class="btn btn-warning" href="{{ url_for('examen_update_wtf', id_examen=examen.id_examen) }}" role="button">Edit</a>
+            </td>
+            <td class="text-center align-middle">
+                <a class="btn btn-danger" href="{{ url_for('examen_delete_wtf', id_examen=examen.id_examen) }}" role="button">Delete</a>
+            </td>
+            <td class="text-center align-middle">
+                <a class="btn btn-info" href="{{ url_for('examen_info', id_examen=examen.id_examen) }}" role="button">Info</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="8" class="text-center">Aucun examen.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 		</div>
 	</div>
 </div>

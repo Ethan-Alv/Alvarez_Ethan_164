@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} Infos Dossier {% endblock %}
+{% block body %}
+<div class="container">
+    <h3>Informations du dossier</h3>
+    {% if data %}
+    <table class="table table-bordered">
+        <tr><th colspan="2">Patient</th></tr>
+        <tr><td>Id</td><td>{{ data.id_patient }}</td></tr>
+        <tr><td>Nom</td><td>{{ data.nom_patient }}</td></tr>
+        <tr><td>Prénom</td><td>{{ data.prenom_patient }}</td></tr>
+        <tr><td>Date de naissance</td><td>{{ data.date_naissance_pers }}</td></tr>
+        <tr><td>Localité</td><td>{{ data.localite_patient }}</td></tr>
+        <tr><td>Code postal</td><td>{{ data.code_postal_patient }}</td></tr>
+        <tr><td>Rue</td><td>{{ data.nom_rue_patient }}</td></tr>
+        <tr><td>Numéro</td><td>{{ data.numero_rue_patient }}</td></tr>
+        <tr><td>Téléphone</td><td>{{ data.telephone_patient }}</td></tr>
+        <tr><td>Email</td><td>{{ data.email_patient }}</td></tr>
+        <tr><th colspan="2">Dossier</th></tr>
+        <tr><td>Id dossier</td><td>{{ data.id_dossier }}</td></tr>
+        <tr><td>Ouverture</td><td>{{ data.ouverture_dossier }}</td></tr>
+        <tr><td>Clôture</td><td>{{ data.cloture_dossier }}</td></tr>
+        <tr><td>Statut</td><td>{{ data.statut_dossier }}</td></tr>
+    </table>
+    {% else %}
+    <p>Aucune information trouvée.</p>
+    {% endif %}
+    <a href="{{ url_for('genres_afficher', order_by='ASC', id_genre_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

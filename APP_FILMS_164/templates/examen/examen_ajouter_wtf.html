@@ -2,27 +2,27 @@
 {% block title %} Ajouter un EXAMEN (WTF) {% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Ajouter un nouvel EXAMEN (WTForms)
-			</p>
-			<form action="" method="POST" novalidate>
-				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
-				{{ form.hidden_tag() }}
-				<div class="form-group">
-					<p>
-						{{ form.nom_examen_wtf.label }}<br>
-						{{ form.nom_examen_wtf(size=32) }}<br>
-						{% for error in form.nom_examen_wtf.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</p>
-				</div>
-				{{ form.submit(class="btn btn-primary") }}
-			</form>
-		</div>
-	</div>
+    <h3>Ajouter un examen</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.patient_select.label }} {{ form.patient_select(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.type_examen.label }} {{ form.type_examen(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.resultats_examen.label }} {{ form.resultats_examen(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label>Date de l'examen</label>
+            <div class="form-inline">
+                {{ form.jour_examen(class="form-control d-inline w-auto") }}
+                {{ form.mois_examen(class="form-control d-inline w-auto") }}
+                {{ form.annee_examen(class="form-control d-inline w-auto") }}
+            </div>
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+    </form>
 </div>
 {% endblock %}
-

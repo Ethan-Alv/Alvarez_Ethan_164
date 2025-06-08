@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Supprimer un médicament</h3>
+    <form method="POST">
+        {{ form_delete.hidden_tag() }}
+        <div class="form-group">
+            {{ form_delete.nom_medic.label }} {{ form_delete.nom_medic(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.dosage_medic.label }} {{ form_delete.dosage_medic(class="form-control", readonly=true) }}
+        </div>
+        <div class="form-group">
+            {{ form_delete.forme_medic.label }} {{ form_delete.forme_medic(class="form-control", readonly=true) }}
+        </div>
+        {{ form_delete.submit_btn_conf_del(class="btn btn-danger") }}
+        {{ form_delete.submit_btn_annuler(class="btn btn-secondary") }}
+    </form>
+</div>
+{% endblock %}

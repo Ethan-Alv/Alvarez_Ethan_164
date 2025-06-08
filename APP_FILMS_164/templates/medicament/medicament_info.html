@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Informations sur le médicament</h3>
+    <table class="table table-bordered">
+        <tr><th>Id</th><td>{{ data.id_medicament }}</td></tr>
+        <tr><th>Nom</th><td>{{ data.nom_medic }}</td></tr>
+        <tr><th>Dosage</th><td>{{ data.dosage_medic }}</td></tr>
+        <tr><th>Forme</th><td>{{ data.forme_medic }}</td></tr>
+    </table>
+    <a href="{{ url_for('medicaments_afficher', order_by='ASC', id_medicament_sel=0) }}" class="btn btn-secondary">Retour</a>
+</div>
+{% endblock %}

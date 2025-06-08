@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <h3>Modifier un médicament</h3>
+    <form method="POST">
+        {{ form_update.hidden_tag() }}
+        <div class="form-group">
+            {{ form_update.nom_medic.label }} {{ form_update.nom_medic(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.dosage_medic.label }} {{ form_update.dosage_medic(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form_update.forme_medic.label }} {{ form_update.forme_medic(class="form-control") }}
+        </div>
+        {{ form_update.submit(class="btn btn-warning") }}
+    </form>
+</div>
+{% endblock %}

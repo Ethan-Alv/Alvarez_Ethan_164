@@ -51,6 +51,23 @@ try:
 
     from APP_FILMS_164.films import gestion_films_crud
     from APP_FILMS_164.films import gestion_films_wtf_forms
+    from APP_FILMS_164.patient import gestion_patient_crud
+    from APP_FILMS_164.patient import gestion_patient_wtf_forms
+    from APP_FILMS_164.consultation import gestion_consultation_crud
+    from APP_FILMS_164.consultation import gestion_consultation_wtf_forms
+    from APP_FILMS_164.anamnese import gestion_anamnese_crud
+    from APP_FILMS_164.anamnese import gestion_anamnese_wtf_forms
+    from APP_FILMS_164.medicament import gestion_medicament_crud
+    from APP_FILMS_164.medicament import gestion_medicament_wtf_forms
+    from APP_FILMS_164.medecin import gestion_medecin_crud
+    from APP_FILMS_164.medecin import gestion_medecin_wtf_forms
+    from APP_FILMS_164.signe_vital import gestion_signe_vital_crud
+    from APP_FILMS_164.signe_vital import gestion_signe_vital_wtf_forms
+    from APP_FILMS_164.rapport import gestion_rapport_crud
+    from APP_FILMS_164.rapport import gestion_rapport_wtf_forms
+    from APP_FILMS_164.prescription import gestion_prescription_crud
+    from APP_FILMS_164.prescription import gestion_prescription_wtf_forms
+
 
 except Exception as Exception_init_app_films_164:
     print(f"4567756434 Une erreur est survenue {type(Exception_init_app_films_164)} dans"
